@@ -7,7 +7,7 @@
 Setup database information in .env<br>
 Ex. postgresql://postgres:password@localhost:5432/dbname?schema=public
 
-> cd backend<br>
+> cd orderfaz_backend_test<br>
 > npm install<br>
 > npx prisma migrate dev (Migrate database)<br>
 > npm run dev
