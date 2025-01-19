@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  username     String     @db.VarChar(30)
+  password     String     @db.VarChar(255)
+  firstName    String     @db.VarChar(50)
+  lastName     String     @db.VarChar(50)
+  email        String     @db.VarChar(50)
+  access_token String     @default("") @db.VarChar(256)
+  Shipment     Shipment[]
+
+  @@map("user")
+}
+
+model Admin {
+  id           Int    @id @default(autoincrement())
+  username     String @db.VarChar(30)
+  password     String @db.VarChar(255)
+  firstName    String @db.VarChar(50)
+  lastName     String @db.VarChar(50)
+  email        String @db.VarChar(50)
+  access_token String @default("") @db.VarChar(256)
+
+  @@map("admin")
+}
+
+model Shipment {
+  id           Int            @id @default(autoincrement())
+  no           String         @db.VarChar(20)
+  date         DateTime       @db.Timestamptz() @default(now())
+  user         User           @relation(fields: [userId], references: [id], onDelete: NoAction)
+  userId       Int            @map("user_id") @db.Integer
+  status       String         @db.VarChar(10)
+  ShipmentItem ShipmentItem[]
+
+  @@map("shipment")
+}
+
+model ShipmentItem {
+  id         Int      @id @default(autoincrement())
+  shipment   Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  shipmentId Int      @map("shipment_id") @db.Integer
+  itemName   String   @map("item_name") @db.VarChar(50)
+  quantity   Int      @db.Integer
+
+  @@map("shipment_item")
+}
